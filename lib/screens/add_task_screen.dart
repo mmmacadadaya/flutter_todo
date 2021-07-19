@@ -69,6 +69,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         task.status = 0;
         DatabaseHelper.instance.insertTask(task);
       } else {
+        task.id = widget.task.id;
         task.status = widget.task.status;
         DatabaseHelper.instance.updateTask(task);
       }
@@ -76,6 +77,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       widget.updateTaskList();
       Navigator.pop(context);
     }
+  }
+
+  _delete() {
+    DatabaseHelper.instance.deleteTask(widget.task.id);
+    widget.updateTaskList();
+    Navigator.pop(context);
   }
 
   @override
@@ -99,7 +106,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 SizedBox(height: 20.0),
                 Text(
-                  'Add Task',
+                  widget.task == null ? 'Add Task' : 'Update Task',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 40.0,
@@ -190,7 +197,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                         child: TextButton(
                           child: Text(
-                            'Add',
+                            widget.task == null ? 'Add' : 'Update',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -199,6 +206,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           onPressed: _submit,
                         ),
                       ),
+                      widget.task != null
+                          ? Container(
+                              margin: EdgeInsets.symmetric(vertical: 20.0),
+                              height: 60.0,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              child: TextButton(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                                onPressed: _delete,
+                              ),
+                            )
+                          : SizedBox.shrink(),
                     ],
                   ),
                 )
